@@ -16,12 +16,6 @@ struct Request {
     method: String,
 }
 
-// impl Request {
-//     fn new(name: String, url: String, method: String) -> Self {
-//         Request { name, url, method }
-//     }
-// }
-
 struct App {
     requests: Vec<Request>,
     selected: usize,
@@ -125,7 +119,7 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>) -> io::Result<()> {
         if let Event::Key(key) = event::read()? {
             match app.screen {
                 Screen::Main => match key.code {
-                    KeyCode::Char('q') => return Ok(()),
+                    KeyCode::Char('q') | KeyCode::Esc => return Ok(()),
                     KeyCode::Char('a') => {
                         app.screen = Screen::NewRequest;
                         app.form = RequestForm::new();
@@ -213,14 +207,6 @@ fn draw_main(f: &mut Frame, app: &App) {
         .requests
         .iter()
         .map(|request| {
-            // let method_color = match request.method.as_str() {
-            //     "GET" => Color::Green,
-            //     "POST" => Color::Blue,
-            //     "PUT" => Color::Yellow,
-            //     "DELETE" => Color::Red,
-            //     _ => Color::White,
-            // };
-
             let line = Line::from(vec![
                 Span::styled(
                     format!("[{}] ", request.method),
@@ -237,7 +223,7 @@ fn draw_main(f: &mut Frame, app: &App) {
     state.select(Some(app.selected));
 
     let requests_list = List::new(items)
-        .block(Block::default().title("Requests").borders(Borders::ALL))
+        .block(Block::default().title(" Requests ").borders(Borders::ALL))
         .highlight_style(
             Style::default()
                 // .fg(Color::Reset) // use terminal’s default foreground
@@ -250,7 +236,7 @@ fn draw_main(f: &mut Frame, app: &App) {
     f.render_stateful_widget(requests_list, chunks[0], &mut state);
 
     // Right panel: responses
-    let responses_panel = Block::default().title("Responses").borders(Borders::ALL);
+    let responses_panel = Block::default().title(" Responses ").borders(Borders::ALL);
     f.render_widget(responses_panel, right_chunks[0]);
 
     let details = if let Some(req) = app.requests.get(app.selected) {
@@ -263,7 +249,7 @@ fn draw_main(f: &mut Frame, app: &App) {
     };
 
     let details_widget =
-        Paragraph::new(details).block(Block::default().title("Details").borders(Borders::ALL));
+        Paragraph::new(details).block(Block::default().title(" Details ").borders(Borders::ALL));
 
     f.render_widget(details_widget, right_chunks[1]);
 }
