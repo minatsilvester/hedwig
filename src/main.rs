@@ -213,8 +213,23 @@ fn draw_main(f: &mut Frame, app: &App) {
         .requests
         .iter()
         .map(|request| {
-            let content = format!("{} - {} - {}", request.name, request.url, request.method);
-            ListItem::new(content)
+            // let method_color = match request.method.as_str() {
+            //     "GET" => Color::Green,
+            //     "POST" => Color::Blue,
+            //     "PUT" => Color::Yellow,
+            //     "DELETE" => Color::Red,
+            //     _ => Color::White,
+            // };
+
+            let line = Line::from(vec![
+                Span::styled(
+                    format!("[{}] ", request.method),
+                    Style::default().fg(method_color(&request.method)).bold(),
+                ),
+                Span::raw(&request.name),
+            ]);
+
+            ListItem::new(line)
         })
         .collect();
 
@@ -225,9 +240,9 @@ fn draw_main(f: &mut Frame, app: &App) {
         .block(Block::default().title("Requests").borders(Borders::ALL))
         .highlight_style(
             Style::default()
-                .bg(Color::Blue)
-                .fg(Color::White)
-                .add_modifier(Modifier::BOLD),
+                // .fg(Color::Reset) // use terminal’s default foreground
+                .bg(Color::Reset) // use terminal’s default background
+                .add_modifier(Modifier::REVERSED | Modifier::BOLD),
         );
 
     // Left panel: requests
@@ -291,4 +306,14 @@ fn draw_new_request(f: &mut Frame, app: &App) {
         .block(Block::default().title("New Request").borders(Borders::ALL));
 
     f.render_widget(form_widget, size);
+}
+
+fn method_color(method: &str) -> Color {
+    match method {
+        "GET" => Color::Green,
+        "POST" => Color::Blue,
+        "PUT" => Color::Yellow,
+        "DELETE" => Color::Red,
+        _ => Color::White,
+    }
 }
