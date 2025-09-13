@@ -197,6 +197,18 @@ fn draw_main(f: &mut Frame, app: &App) {
         )
         .split(size);
 
+    let right_chunks = Layout::default()
+        .direction(Direction::Vertical)
+        // .margin(1)
+        .constraints(
+            [
+                Constraint::Percentage(70), // Top panel (response)
+                Constraint::Percentage(30), // Bottom panel (response details)
+            ]
+            .as_ref(),
+        )
+        .split(chunks[1]);
+
     let items: Vec<ListItem> = app
         .requests
         .iter()
@@ -224,7 +236,21 @@ fn draw_main(f: &mut Frame, app: &App) {
 
     // Right panel: responses
     let responses_panel = Block::default().title("Responses").borders(Borders::ALL);
-    f.render_widget(responses_panel, chunks[1]);
+    f.render_widget(responses_panel, right_chunks[0]);
+
+    let details = if let Some(req) = app.requests.get(app.selected) {
+        format!(
+            "Name: {}\nURL: {}\nMethod: {}",
+            req.name, req.url, req.method
+        )
+    } else {
+        "No request selected".to_string()
+    };
+
+    let details_widget =
+        Paragraph::new(details).block(Block::default().title("Details").borders(Borders::ALL));
+
+    f.render_widget(details_widget, right_chunks[1]);
 }
 
 fn draw_new_request(f: &mut Frame, app: &App) {
