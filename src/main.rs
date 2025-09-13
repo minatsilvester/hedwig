@@ -5,7 +5,7 @@ use crossterm::{
 };
 use ratatui::{
     prelude::*,
-    widgets::{Block, Borders, List, ListItem, Paragraph},
+    widgets::{Block, Borders, List, ListItem, ListState, Paragraph},
 };
 use std::io;
 
@@ -36,6 +36,22 @@ impl App {
             selected: 0,
             screen: Screen::Main,
             form: RequestForm::new(),
+        }
+    }
+
+    fn next(&mut self) {
+        if !self.requests.is_empty() {
+            self.selected = (self.selected + 1) % self.requests.len();
+        }
+    }
+
+    fn prev(&mut self) {
+        if !self.requests.is_empty() {
+            if self.selected == 0 {
+                self.selected = self.requests.len() - 1;
+            } else {
+                self.selected -= 1;
+            }
         }
     }
 
@@ -114,6 +130,8 @@ fn run_app<B: Backend>(terminal: &mut Terminal<B>) -> io::Result<()> {
                         app.screen = Screen::NewRequest;
                         app.form = RequestForm::new();
                     }
+                    KeyCode::Down => app.next(),
+                    KeyCode::Up => app.prev(),
                     _ => {}
                 },
                 Screen::NewRequest => match key.code {
@@ -188,12 +206,21 @@ fn draw_main(f: &mut Frame, app: &App) {
         })
         .collect();
 
-    let requests_list =
-        List::new(items).block(Block::default().title("Requests").borders(Borders::ALL));
+    let mut state = ListState::default();
+    state.select(Some(app.selected));
+
+    let requests_list = List::new(items)
+        .block(Block::default().title("Requests").borders(Borders::ALL))
+        .highlight_style(
+            Style::default()
+                .bg(Color::Blue)
+                .fg(Color::White)
+                .add_modifier(Modifier::BOLD),
+        );
 
     // Left panel: requests
     // let requests_panel = Block::default().title("Requests").borders(Borders::ALL);
-    f.render_widget(requests_list, chunks[0]);
+    f.render_stateful_widget(requests_list, chunks[0], &mut state);
 
     // Right panel: responses
     let responses_panel = Block::default().title("Responses").borders(Borders::ALL);
@@ -203,7 +230,7 @@ fn draw_main(f: &mut Frame, app: &App) {
 fn draw_new_request(f: &mut Frame, app: &App) {
     let size = f.area();
 
-    let mut lines = vec![
+    let lines = vec![
         format!(
             "Name:  {}{}",
             app.form.name,
