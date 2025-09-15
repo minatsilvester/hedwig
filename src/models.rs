@@ -3,6 +3,7 @@ pub struct Request {
     pub name: String,
     pub url: String,
     pub method: String,
+    pub response: Option<String>,
 }
 
 pub struct RequestForm {

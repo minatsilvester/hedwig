@@ -31,6 +31,12 @@ pub fn run_app(app: &mut App) -> io::Result<()> {
                         app.screen = Screen::NewRequest;
                         app.form = Default::default();
                     }
+                    KeyCode::Char('s') => {
+                        if let Some(req) = app.requests.get_mut(app.selected) {
+                            let result = crate::http::send_request(req);
+                            req.response = Some(result.unwrap_or_else(|e| e));
+                        }
+                    }
                     KeyCode::Down => app.next(),
                     KeyCode::Up => app.prev(),
                     _ => {}

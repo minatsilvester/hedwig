@@ -5,7 +5,6 @@ pub struct App {
     pub selected: usize,
     pub screen: Screen,
     pub form: RequestForm,
-    pub response: Option<String>, // store response text
 }
 
 impl App {
@@ -15,7 +14,6 @@ impl App {
             selected: 0,
             screen: Screen::Main,
             form: RequestForm::new(),
-            response: None,
         }
     }
 
@@ -36,6 +34,11 @@ impl App {
     }
 
     pub fn add_request(&mut self, name: String, url: String, method: String) {
-        self.requests.push(Request { name, url, method });
+        self.requests.push(Request {
+            name,
+            url,
+            method,
+            response: None,
+        });
     }
 }

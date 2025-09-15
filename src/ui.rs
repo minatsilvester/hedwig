@@ -57,9 +57,12 @@ pub fn draw_main(f: &mut Frame, app: &App) {
 
     // Response
     let response_text = app
-        .response
-        .clone()
-        .unwrap_or_else(|| "No response".to_string());
+        .requests
+        .get(app.selected)
+        .and_then(|r| r.response.as_ref())
+        .map(|s| s.as_str())
+        .unwrap_or("No response yet");
+
     let response_widget = Paragraph::new(response_text)
         .block(Block::default().title(" Response ").borders(Borders::ALL));
     f.render_widget(response_widget, right_chunks[0]);
