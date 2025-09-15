@@ -1,4 +1,5 @@
 mod app;
+mod http;
 mod input;
 mod models;
 mod ui;
