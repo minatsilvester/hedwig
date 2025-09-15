@@ -1,30 +1,31 @@
-# TUI Input App
+# Rust TUI HTTP Client
 
-A terminal-based user interface (TUI) built in **Rust** using [Ratatui](https://github.com/ratatui-org/ratatui) and [Crossterm](https://github.com/crossterm-rs/crossterm).
-The app demonstrates handling **multi-screen navigation**, including a dedicated **input form screen** where users can enter text interactively.
+A lightweight and fun **Terminal User Interface (TUI)** app built with [ratatui](https://github.com/ratatui-org/ratatui) and [crossterm](https://github.com/crossterm-rs/crossterm).
+It allows you to create, send, and manage HTTP requests right inside your terminal.
 
 ---
 
 ## ✨ Features
-
-- 🎨 Clean TUI layout powered by Ratatui
-- ⌨️ Keyboard-based navigation and input
-- 📝 Multi-line text entry with editable form fields
-- 🔄 Switch between screens (home, input form, results, etc.)
-- ⚡ Runs fast, cross-platform (Linux, macOS, Windows)
+- 📜 **Request Management** – Add, view, and organize HTTP requests.
+- 🌐 **HTTP Methods** – Supports GET, POST, PUT, DELETE (and more soon).
+- 🎨 **Color-coded UI** – Requests are styled based on their HTTP method.
+- 📬 **Send Requests** – Quickly send and view responses without leaving the terminal.
+- 🖥️ **Minimalist UI** – Split panels for requests, responses, and details.
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Demo
+[![Watch the demo](assets/banner.png)](https://youtu.be/hYra8kAZ_M0)
 
-### Prerequisites
-- [Rust](https://www.rust-lang.org/tools/install) (latest stable recommended)
-- A terminal that supports Crossterm (most do by default)
+---
 
-### Installation
-
-Clone the repo:
+## 🛠️ Installation
+Make sure you have Rust installed. If not, [install Rust](https://www.rust-lang.org/tools/install).
 
 ```bash
-git clone https://github.com/your-username/tui-input-app.git
-cd tui-input-app
+# Clone the repo
+git clone https://github.com/minatsilvester/hedwig
+cd hedwig
+
+# Run in debug mode
+cargo run
