@@ -5,6 +5,7 @@ use ratatui::{
 
 use crate::app::App;
 use crate::models::FormField;
+use chrono::{DateTime, Local};
 
 pub fn draw_main(f: &mut Frame, app: &App) {
     let size = f.area();
@@ -56,15 +57,27 @@ pub fn draw_main(f: &mut Frame, app: &App) {
         .split(chunks[1]);
 
     // Response
-    let response_text = app
-        .requests
-        .get(app.selected)
-        .and_then(|r| r.response.as_ref())
-        .map(|s| s.as_str())
-        .unwrap_or("No response yet");
+    let (response_text, response_time) = if let Some(req) = app.requests.get(app.selected) {
+        let text = req.response.as_deref().unwrap_or("No response yet");
+        let time_info = if let Some(t) = req.last_sent_at {
+            let datetime: DateTime<Local> = t.into();
+            format!("(Last Sent {})", datetime)
+        } else {
+            "".to_string()
+        };
+        (text.to_string(), time_info)
+    } else {
+        ("No response yet".to_string(), "".to_string())
+    };
 
-    let response_widget = Paragraph::new(response_text)
-        .block(Block::default().title(" Response ").borders(Borders::ALL));
+    let response_block = Block::default().title(" Response ").borders(Borders::ALL);
+
+    let response_widget =
+        Paragraph::new(format!("{response_text}\n{response_time}")).block(response_block);
+    // .wrap(Wrap { trim: true });
+
+    // let response_widget = Paragraph::new(response_text)
+    //     .block(Block::default().title(" Response ").borders(Borders::ALL));
     f.render_widget(response_widget, right_chunks[0]);
 
     // Details

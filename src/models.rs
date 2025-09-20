@@ -1,9 +1,12 @@
+use std::time::SystemTime;
+
 #[derive(Debug, Clone)]
 pub struct Request {
     pub name: String,
     pub url: String,
     pub method: String,
     pub response: Option<String>,
+    pub last_sent_at: Option<SystemTime>,
 }
 
 pub struct RequestForm {
