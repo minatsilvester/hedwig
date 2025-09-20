@@ -1,6 +1,6 @@
 use ratatui::{
     prelude::*,
-    widgets::{Block, Borders, List, ListItem, ListState, Paragraph},
+    widgets::{Block, Borders, List, ListItem, ListState, Paragraph, Wrap},
 };
 
 use crate::app::App;
@@ -72,9 +72,9 @@ pub fn draw_main(f: &mut Frame, app: &App) {
 
     let response_block = Block::default().title(" Response ").borders(Borders::ALL);
 
-    let response_widget =
-        Paragraph::new(format!("{response_text}\n{response_time}")).block(response_block);
-    // .wrap(Wrap { trim: true });
+    let response_widget = Paragraph::new(format!("{response_text}\n{response_time}"))
+        .block(response_block)
+        .wrap(Wrap { trim: true });
 
     // let response_widget = Paragraph::new(response_text)
     //     .block(Block::default().title(" Response ").borders(Borders::ALL));
