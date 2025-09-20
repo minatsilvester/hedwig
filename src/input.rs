@@ -4,7 +4,7 @@ use crossterm::{
     terminal::{EnterAlternateScreen, LeaveAlternateScreen, disable_raw_mode, enable_raw_mode},
 };
 use ratatui::{Terminal, backend::CrosstermBackend};
-use std::io;
+use std::{io, time::SystemTime};
 
 use crate::app::App;
 use crate::models::{FormField, Screen};
@@ -35,6 +35,7 @@ pub fn run_app(app: &mut App) -> io::Result<()> {
                         if let Some(req) = app.requests.get_mut(app.selected) {
                             let result = crate::http::send_request(req);
                             req.response = Some(result.unwrap_or_else(|e| e));
+                            req.last_sent_at = Some(SystemTime::now());
                         }
                     }
                     KeyCode::Down => app.next(),

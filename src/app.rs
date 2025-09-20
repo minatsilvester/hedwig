@@ -39,6 +39,7 @@ impl App {
             url,
             method,
             response: None,
+            last_sent_at: None,
         });
     }
 }
